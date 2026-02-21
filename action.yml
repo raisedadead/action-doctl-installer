@@ -1,0 +1,29 @@
+name: "DigitalOcean doctl Installer Action"
+description: "Installs the doctl CLI and optionally authenticates with DigitalOcean"
+author: "Mrugesh Mohapatra"
+branding:
+  icon: "download-cloud"
+  color: "blue"
+inputs:
+  version:
+    description: "Version of doctl to install (e.g. 1.98.1). Defaults to latest."
+    required: false
+    default: "latest"
+  token:
+    description: "DigitalOcean API token for authentication"
+    required: false
+  no_auth:
+    description: "If true, skip authentication even if a token is provided"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        $GITHUB_ACTION_PATH/entrypoint.sh \
+        -v ${{ inputs.version }} \
+        ${{ inputs.no_auth == 'true' && '--no-auth' || '' }}
+      shell: bash
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ inputs.token }}
